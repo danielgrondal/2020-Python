@@ -1,0 +1,92 @@
+General:
+
+Each city you develop will be assessed on three qualities:
+- How many people you manage to house
+- How happy your inhabitants are with your work
+- How environmentally friendly you are
+
+Each city can be attempted as many times as you like and the best score for each city will be counted. 
+The sum of the scores for each city will then be used as your final score. 
+
+Playing:
+
+1. Each game session begins with calling /new to create a new game, 
+    in return you will get information about your game session and the map on which it will be played. 
+2. to start the game, call /start to receive the first game state. 
+3. Decide what you want to do and call one of the /action/ endpoints to perform an action on the game state 
+    and progress the game one turn. Each call to /action/ returns an updated game state. 
+4. Each game lasts for 700 turns
+
+Score:
+
+To view your score, call the route /getScore or go to the Highscore page to view each teams best score. 
+If you want to view the replay, call /replay or view the replay by going to the Visualizer and pasting your game id. 
+Each team can have a maximum of 4 games active at the same time.
+
+Map:
+
+Each map differs on some important characteristics. 
+- the layout and available buildable space will be different
+- the climate with different Max Temperature and Min Temperature. 
+- The types of Available Buildings will also differ per map
+- on some maps some buildings might already be constructed when the map starts. 
+- The types of available energy will be the same for all maps with the same cost and co2 emissions, 
+  but the amount of energy available for each type will differ. 
+  - Your starting Funds and the number of people in Queue can also be different. 
+
+It is important to change your strategy depending on which map you are playing 
+since some strategies can work better on some maps.
+
+Builds:
+
+- residence (apartments, cabin, ...)
+- utilities (park, mall, ...)
+  * Place them in positions with lots of other buildings nearby to maximize their usefulness.
+- upgrades
+  * The upgrades enhance the residence in which they are built. 
+- effects
+  * The effects are applied by either a utility building or by an upgrade.
+- Energy, Temperature and Maintenance
+  *  /action/adjustEnergy, (150 funds) to change the residences Requested Energy
+  *  Any energy bought above the Base Energy Need will be converted to heat.  This can be used to control 
+     the temperature of the residence when the outdoor temperature changes during the game
+  * 183 turns make up a year during which the temperature will rise and fall.
+  * Each map will have three tiers of energy that can be purchased.
+  * The indoor temperature should be as close to 21 degrees as possible
+    - newTemp = indoorTemp + (effectiveEnergyIn - baseEnergyNeed) * degreesPerExcessMwh + degreesPerPop * currentPop - (indoorTemp - outdoorTemp) * emissivity
+  * Maintenance is required to keep the health of a building high. 
+- queue and population
+  * the inhabitants will first enter a queue
+  * As long as they do not stand in a Long Queue for more than a certain Queue Tick Threshold turns they will 
+    be happy and contribute to your overall happiness score, up to the Queue Max Happiness each turn
+  * Each building has their own inhabitants which generate income and happiness depending on the building they live in. 
+    They also contribute a fixed Co2 per Pop every tick. 
+    Low Happiness in a building => the inhabitants will start to move out => bad effects on your economy and your scores
+- population, happiness, co2 and score
+  * Population is calculated only at the end of each session
+  * Happiness is cumulative over the entire game session. 
+    - keep inhabitants happy by having a good indoor temperature and a well maintained building
+    - keep the queue happy by letting everyone that enters the queue move into your district.
+  * The final score is calculated as: score = population*15 + happiness/10 - co2
+
+Api:
+
+GET:
+
+- /api/game/start
+- /api/game/gameState
+- /api/game/games
+- /api/game/end
+- /api/game/gameState?gameId=
+- /api/game/score
+- /api/game/gameInfo
+
+POST:
+- /api/game/new
+- /api/game/action/startBuild
+- /api/game/action/build
+- /api/game/action/demolish
+- /api/game/action/wait
+- /api/game/action/maintenance
+- /api/game/action/adjustEnergy
+- /api/game/action/buyUpgrade
