@@ -12,6 +12,7 @@ def new_game(api_key, game_options=""):
             sess = requests.Session()
         response = sess.post(base_api_path + "new", json=game_options, headers={"x-api-key": api_key})
         if response.status_code == 200:
+            print("Response: " + response.text)
             return response.json()
 
         print("Fatal Error: could not create new game")
