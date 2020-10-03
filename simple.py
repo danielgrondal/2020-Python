@@ -58,12 +58,12 @@ def adjust_temp(game_layer, game_state):
                 blueprint = game_layer.get_residence_blueprint(res.building_name)
                 # newTemp = indoorTemp + (effectiveEnergyIn - baseEnergyNeed) * degreesPerExcessMwh + degreesPerPop * currentPop - (indoorTemp - outdoorTemp) * emissivity
                 #21 = res.temperature + (energy-blueprint.base_energy_need)*blueprint.degreesPerExcessMwh + blueprint.degreesPerPop - (res.temperature - game_state.current_temp)*blueprint.emissivity;
-                energy = ((21 - game_state.current_temp - 0.04*res.current_pop) / 2) + blueprint.base_energy_need
+                energy = ((21 - game_state.current_temp - 0.04*res.current_pop) / 3) + blueprint.base_energy_need
                 #energy = blueprint.base_energy_need + 0.5 + (res.temperature - game_state.current_temp) * blueprint.emissivity / 1 - res.current_pop * 0.04
                 
                 game_layer.adjust_energy_level((res.X, res.Y), energy)
 
-            elif res.temperature > 24 and game_state.funds > 150:
+            elif res.temperature > 22 and game_state.funds > 150:
                 did_maint = True
                 blueprint = game_layer.get_residence_blueprint(res.building_name)
                 energy = blueprint.base_energy_need - 0.5 \
